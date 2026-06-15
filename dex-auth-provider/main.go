@@ -57,16 +57,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	legacyOpts := options.NewLegacyOptions()
-	legacyOpts.LegacyProvider.ProviderType = "oidc"
-	legacyOpts.LegacyProvider.ProviderName = "dex"
-	legacyOpts.LegacyProvider.ClientID = opts.ClientID
-	legacyOpts.LegacyProvider.ClientSecret = opts.ClientSecret
-	legacyOpts.LegacyProvider.Scope = opts.Scopes
-	legacyOpts.LegacyProvider.OIDCIssuerURL = opts.IssuerURL
-	legacyOpts.LegacyProvider.OIDCEmailClaim = "email"
-	legacyOpts.LegacyProvider.OIDCGroupsClaim = "groups"
-	legacyOpts.LegacyProvider.UserIDClaim = "sub"
+	legacyOpts := newDexLegacyOptions(opts)
 
 	oauthProxyOpts, err := legacyOpts.ToOptions()
 	if err != nil {
@@ -146,4 +137,17 @@ func main() {
 		fmt.Printf("ERROR: dex-auth-provider: failed to listen and serve: %v\n", err)
 		os.Exit(1)
 	}
+}
+
+func newDexLegacyOptions(opts Options) *options.LegacyOptions {
+	legacyOpts := options.NewLegacyOptions()
+	legacyOpts.LegacyProvider.ProviderType = "oidc"
+	legacyOpts.LegacyProvider.ProviderName = "dex"
+	legacyOpts.LegacyProvider.ClientID = opts.ClientID
+	legacyOpts.LegacyProvider.ClientSecret = opts.ClientSecret
+	legacyOpts.LegacyProvider.Scope = opts.Scopes
+	legacyOpts.LegacyProvider.OIDCIssuerURL = opts.IssuerURL
+	legacyOpts.LegacyProvider.OIDCEmailClaim = "email"
+	legacyOpts.LegacyProvider.OIDCGroupsClaim = "groups"
+	return legacyOpts
 }
